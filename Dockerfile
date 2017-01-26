@@ -1,8 +1,9 @@
 FROM phusion/baseimage:0.9.18
-MAINTAINER xama <oliver@xama.us>
-ENV SEAFILE_VERSION 6.0.7
 
-EXPOSE 8082 8000
+MAINTAINER cmnelson <chad@nelsons.in>
+
+ENV SEAFILE_VERSION 6.0.7
+EXPOSE 80
 
 VOLUME /seafile
 WORKDIR /seafile
@@ -11,7 +12,7 @@ WORKDIR /seafile
 RUN apt-get update && apt-get install -y \
   openjdk-7-jre poppler-utils libpython2.7 python-pip \
   python-setuptools python-imaging python-mysqldb python-memcache python-ldap \
-  python-urllib3 sqlite3 wget \
+  python-urllib3 sqlite3 wget nginx \
   libreoffice libreoffice-script-provider-python fonts-vlgothic ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy && pip install boto
 
 # Download seafile binary
@@ -25,8 +26,16 @@ ADD service/seafile/stop.sh /etc/service/seafile/stop
 ADD service/seahub/run.sh /etc/service/seahub/run
 ADD service/seahub/stop.sh /etc/service/seahub/stop
 
+# Install Ngninx service
+ADD service/nginx/run.sh /etc/service/nginx/run
+
 # Add custom configuration
 COPY config/seafevents.conf /seafevents.conf
+
+# Configure nginx
+COPY config/seafile.conf /etc/nginx/sites-available/seafile.conf
+RUN ln -s /etc/nginx/sites-available/seafile.conf /etc/nginx/sites-enabled/seafile.conf && \
+	rm /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -38,6 +47,7 @@ ADD bin/upgrade.sh /usr/local/sbin/upgrade
 RUN chmod +x /usr/local/sbin/setup && \
 	chmod +x /usr/local/sbin/upgrade && \
 	chmod +x /etc/service/seafile/* && \
-	chmod +x /etc/service/seahub/*
+	chmod +x /etc/service/seahub/* && \
+	chmod +x /etc/service/nginx/*
 
 CMD /sbin/my_init
