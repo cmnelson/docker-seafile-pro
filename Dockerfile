@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.18
+FROM phusion/baseimage:0.9.19
 
 MAINTAINER cmnelson <chad@nelsons.in>
 
@@ -10,10 +10,11 @@ WORKDIR /seafile
 
 # Required packages for pro edition
 RUN apt-get update && apt-get install -y \
-  openjdk-7-jre poppler-utils libpython2.7 python-pip \
+  openjdk-8-jre poppler-utils libpython2.7 python-pip \
   python-setuptools python-imaging python-mysqldb python-memcache python-ldap \
-  python-urllib3 sqlite3 wget nginx \
-  libreoffice libreoffice-script-provider-python fonts-vlgothic ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy && pip install boto
+  python-urllib3 sqlite3 wget nginx libreoffice libreoffice-script-provider-python \
+  fonts-vlgothic ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy python-pylibmc \
+  && pip install boto requests django-pylibmc
 
 # Download seafile binary
 RUN wget "https://download.seafile.com/d/06d4ca0272/files/?p=/seafile-pro-server_${SEAFILE_VERSION}_x86-64.tar.gz&dl=1" -O "/seafile-pro-server_${SEAFILE_VERSION}_x86-64.tar.gz"
