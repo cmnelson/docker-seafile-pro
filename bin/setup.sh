@@ -19,7 +19,13 @@ ulimit -n 30000
 
 # Custom configurations
 mkdir -p /seafile/conf
-echo "ENABLE_RESUMABLE_FILEUPLOAD = True" >> /seafile/conf/seahub_settings.py
+echo -e "ENABLE_RESUMABLE_FILEUPLOAD = True \n\n\
+CACHES = { \n\
+    'default': { \n\
+        'BACKEND': 'django_pylibmc.memcached.PyLibMCCache', \n\
+        'LOCATION': '127.0.0.1:11211', \n\
+    } \n\
+} " >> /seafile/conf/seahub_settings.py
 mv /seafevents.conf /seafile/conf/
 
 # Launch setup

@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
   python-setuptools python-imaging python-mysqldb python-memcache python-ldap \
   python-urllib3 sqlite3 wget nginx libreoffice libreoffice-script-provider-python \
   fonts-vlgothic ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy python-pylibmc \
-  && pip install boto requests django-pylibmc
+  && pip install boto requests django-pylibmc && ln -sf /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java /usr/bin/
 
 # Download seafile binary
 RUN wget "https://download.seafile.com/d/06d4ca0272/files/?p=/seafile-pro-server_${SEAFILE_VERSION}_x86-64.tar.gz&dl=1" -O "/seafile-pro-server_${SEAFILE_VERSION}_x86-64.tar.gz"
